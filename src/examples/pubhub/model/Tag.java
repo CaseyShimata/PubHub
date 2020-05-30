@@ -9,27 +9,27 @@ public class Tag {
 
 	private String isbn_13;			// International Standard Tag Number, unique
 	private String tag_name;
-	private LocalDate publishDate;	// Date of publish to the website
+	private LocalDate time_stamp;	// Date of publish to the website
 	
 	// Constructor used when no date is specified
 	public Tag(String isbn, String tag_name) {
 		this.isbn_13 = isbn;
 		this.tag_name = tag_name;
-		this.publishDate = LocalDate.now();
+		this.time_stamp = LocalDate.now();
 	}
 	
 	// Constructor used when a date is specified
 	public Tag(String isbn, String tag_name, LocalDate publishDate) {
 		this.isbn_13 = isbn;
 		this.tag_name = tag_name;
-		this.publishDate = publishDate;
+		this.time_stamp = publishDate;
 	}
 	
 	// Default constructor
 	public Tag() {
 		this.isbn_13 = null;
 		this.tag_name = null;
-		this.publishDate = LocalDate.now();
+		this.time_stamp = LocalDate.now();
 	}
 	
 	public String getIsbn13() {
@@ -49,11 +49,11 @@ public class Tag {
 	}
 
 
-	public LocalDate getPublishDate() {
-		return publishDate;
+	public LocalDate getTimeStamp() {
+		return time_stamp;
 	}
 
-	public void setPublishDate(LocalDate publishDate) {
-		this.publishDate = publishDate;
+	public void setTimeStamp(LocalDate publishDate) {
+		this.time_stamp = publishDate;
 	}	
 }

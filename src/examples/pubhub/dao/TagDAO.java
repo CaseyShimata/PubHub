@@ -13,6 +13,8 @@ public interface TagDAO {
 	public boolean addTagToBookWithISBN(Tag tag);
 	
 	//read
+	public List<Tag> getAllTags();
+
 	public List<Tag> getAllTagsForBookWithTitle(String title);
 	public List<Tag> getAllTagsForBookWithISBN(String isbn_13);
 	

@@ -43,6 +43,7 @@ public class PublishBookServlet extends HttpServlet {
 
 		} else {
 
+			//should be handled in bookdaoimpl insert book
 			Book book = new Book();
 			book.setIsbn13(req.getParameter("isbn13"));
 			book.setTitle(req.getParameter("title"));

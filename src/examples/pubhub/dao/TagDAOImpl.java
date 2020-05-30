@@ -30,7 +30,7 @@ public class TagDAOImpl implements TagDAO {
 			
 			stmt.setString(1, title);
 			stmt.setString(2, tag.getTagName());
-			stmt.setDate(3, Date.valueOf(tag.getPublishDate()));
+			stmt.setDate(3, Date.valueOf(tag.getTimeStamp()));
 			
 			if (stmt.executeUpdate() != 0)
 				return true;
@@ -56,7 +56,7 @@ public class TagDAOImpl implements TagDAO {
 			
 			stmt.setString(1, tag.getIsbn13());
 			stmt.setString(2, tag.getTagName());
-			stmt.setDate(4, Date.valueOf(tag.getPublishDate()));
+			stmt.setDate(4, Date.valueOf(tag.getTimeStamp()));
 			
 			if (stmt.executeUpdate() != 0)
 				return true;
@@ -71,6 +71,38 @@ public class TagDAOImpl implements TagDAO {
 		}
 	}
 	
+	/*------------------------------------------------------------------------------------------------*/
+	@Override
+	public List<Tag> getAllTags() {
+		
+		List<Tag> tags = new ArrayList<>();
+
+		try {
+			connection = DAOUtilities.getConnection();
+			String sql = "SELECT * FROM Tags";
+			stmt = connection.prepareStatement(sql);
+						
+			ResultSet rs = stmt.executeQuery();
+
+			while (rs.next()) {
+				Tag tag = new Tag();
+
+				tag.setIsbn13(rs.getString("isbn_13"));
+				tag.setTagName(rs.getString("tag_name"));
+				tag.setTimeStamp(rs.getDate("time_stamp").toLocalDate());
+
+				tags.add(tag);
+			}
+
+		} catch (SQLException e) {
+			System.out.println("TEST1 TEST1 TEST1 \n\n");
+
+			e.printStackTrace();
+		} finally {
+			closeResources();
+		}
+		
+		return tags;	} 
 	/*------------------------------------------------------------------------------------------------*/
 
 	@Override
@@ -91,7 +123,7 @@ public class TagDAOImpl implements TagDAO {
 
 				tag.setIsbn13(rs.getString("isbn_13"));
 				tag.setTagName(rs.getString("tag_name"));
-				tag.setPublishDate(rs.getDate("publish_date").toLocalDate());
+				tag.setTimeStamp(rs.getDate("time_stamp").toLocalDate());
 
 				tags.add(tag);
 			}
@@ -126,7 +158,7 @@ public class TagDAOImpl implements TagDAO {
 
 				tag.setIsbn13(rs.getString("isbn_13"));
 				tag.setTagName(rs.getString("tag_name"));
-				tag.setPublishDate(rs.getDate("publish_date").toLocalDate());
+				tag.setTimeStamp(rs.getDate("time_stamp").toLocalDate());
 
 				tags.add(tag);
 			}
@@ -145,7 +177,6 @@ public class TagDAOImpl implements TagDAO {
 	@Override
 	public List<Book> getAllBooksWithTagName(String tag_name) {
 		List<Book> books = new ArrayList<>();
-
 		try {
 			connection = DAOUtilities.getConnection();
 			String sql = "SELECT * FROM Books WHERE isbn_13 IN (SELECT Tags.isbn_13 FROM Tags WHERE tag_name = ?)";
@@ -166,6 +197,7 @@ public class TagDAOImpl implements TagDAO {
 				book.setContent(rs.getBytes("content"));
 
 				books.add(book);
+				System.out.println(book.getTitle() + "\n\n");
 			}
 			
 		} catch (SQLException e) {
