@@ -25,25 +25,24 @@ public class BookPublishingServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
 		// Grab the list of Books from the Database
 		BookDAO bookDao = DAOUtilities.getBookDAO();
 		TagDAO tagDao = DAOUtilities.getTagDAO();
 		request.getSession().setAttribute("tags", tagDao.getAllTags());
 		
+		//on click set session to selected then load books on session if none load all else load 
 		if ((request.getParameter("selectedTag")) != null) {
-			System.out.println((request.getParameter("selectedTag")) + "NOT NULL \n\n\n\n\n" );
 			request.getSession().setAttribute("selectedTag", (request.getParameter("selectedTag")));
-		}
-		
-		if (request.getSession().getAttribute("selectedTag") == null
-				|| request.getSession().getAttribute("selectedTag") == "") {
+
+			if ("none".equals(request.getParameter("selectedTag"))) {
+				request.getSession().setAttribute("books", bookDao.getAllBooks());
+			} else {				
+				request.getSession().setAttribute("books",
+						tagDao.getAllBooksWithTagName(request.getParameter("selectedTag")));
+			}
+		} else if ((request.getParameter("selectedTag")) == null) {
+			request.getSession().setAttribute("selectedTag", "none");
 			request.getSession().setAttribute("books", bookDao.getAllBooks());
-
-		} else {
-			request.getSession().setAttribute("books",
-					tagDao.getAllBooksWithTagName(request.getSession().getAttribute("selectedTag").toString()));
-
 		}
 
 		// Populate the list into a variable that will be stored in the session

@@ -13,9 +13,9 @@ public interface BookDAO {
 	public List<Book> getBooksByTitle(String title);
 	public List<Book> getBooksByAuthor(String author);
 	public List<Book> getBooksLessThanPrice(double price);
-	public Book getBookByISBN(String isbn);
+	public Book getBookByISBN(String isbn_13);
 	
 	public boolean addBook(Book book);
 	public boolean updateBook(Book book);
-	public boolean deleteBookByISBN(String isbn);
+	public boolean deleteBookByISBN(String isbn_13);
 }

@@ -9,6 +9,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
+
 import examples.pubhub.model.Book;
 import examples.pubhub.model.Tag;
 import examples.pubhub.utilities.DAOUtilities;
@@ -22,15 +24,14 @@ public class TagDAOImpl implements TagDAO {
 	PreparedStatement stmt = null;	// We use prepared statements to help protect against SQL injection
 	
 	@Override
-	public boolean addTagToBookWithTitle(String title, Tag tag) {
+	public boolean addTagToBookWithTitle(String title, String new_tag_name) {
 		try {
 			connection = DAOUtilities.getConnection();
-			String sql = "INSERT INTO tags(isbn_13, tag_name, time_stamp) values((select isbn_13 from books where books.title = ?), ?, ?))"; 
+			String sql = "INSERT INTO tags(isbn_13, tag_name, time_stamp) values((select isbn_13 from books where books.title = ?), ?, now()))"; 
 			stmt = connection.prepareStatement(sql);
 			
 			stmt.setString(1, title);
-			stmt.setString(2, tag.getTagName());
-			stmt.setDate(3, Date.valueOf(tag.getTimeStamp()));
+			stmt.setString(2, new_tag_name);
 			
 			if (stmt.executeUpdate() != 0)
 				return true;
@@ -48,16 +49,16 @@ public class TagDAOImpl implements TagDAO {
 	/*------------------------------------------------------------------------------------------------*/
 
 	@Override
-	public boolean addTagToBookWithISBN(Tag tag) {
+	public boolean addTagToBookWithISBN(String isbn_13, String new_tag_name) {
 		try {
 			connection = DAOUtilities.getConnection();
-			String sql = "INSERT INTO Tags VALUES (?, ?, ?)"; 
+			String sql = "INSERT INTO Tags VALUES (?, ?, now())"; 
 			stmt = connection.prepareStatement(sql);
 			
-			stmt.setString(1, tag.getIsbn13());
-			stmt.setString(2, tag.getTagName());
-			stmt.setDate(4, Date.valueOf(tag.getTimeStamp()));
-			
+			stmt.setString(1, isbn_13);
+			stmt.setString(2, new_tag_name);
+			System.out.println("ADD ADD ADD ADD ADD ADD isbn_13:" + isbn_13 + "new_name:" + new_tag_name + "\n\n\n\n\n\n\n");
+
 			if (stmt.executeUpdate() != 0)
 				return true;
 			else
@@ -95,8 +96,6 @@ public class TagDAOImpl implements TagDAO {
 			}
 
 		} catch (SQLException e) {
-			System.out.println("TEST1 TEST1 TEST1 \n\n");
-
 			e.printStackTrace();
 		} finally {
 			closeResources();
@@ -189,7 +188,7 @@ public class TagDAOImpl implements TagDAO {
 			while (rs.next()) {
 				Book book = new Book();
 
-				book.setIsbn13(rs.getString("isbn_13"));
+				book.setisbn_13(rs.getString("isbn_13"));
 				book.setAuthor(rs.getString("author"));
 				book.setTitle(rs.getString("title"));
 				book.setPublishDate(rs.getDate("publish_date").toLocalDate());
@@ -214,15 +213,15 @@ public class TagDAOImpl implements TagDAO {
 
 	//currently just updates tag name of all tags with specific name
 	@Override
-	public boolean updateAllTagsNamed(Tag tag) {
+	public boolean updateAllTagsNamed(String new_tag_name, String tag_name) {
 		try {
 			connection = DAOUtilities.getConnection();
 			//use library or make model same names and escape.. sql queries to prone to syntax errors..
 			String sql = "UPDATE Tags SET tag_name = ? WHERE Tags.tag_name = ?"; 
 			stmt = connection.prepareStatement(sql);
 			
-			stmt.setString(1, tag.getTagName());
-			stmt.setString(2, tag.getTagName());
+			stmt.setString(1, new_tag_name);
+			stmt.setString(2, tag_name);
 			
 			if (stmt.executeUpdate() != 0)
 				return true;
@@ -240,16 +239,17 @@ public class TagDAOImpl implements TagDAO {
 	/*------------------------------------------------------------------------------------------------*/
 
 	@Override
-	public boolean updateTagForBookWithTitle(String title, Tag tag) {
+	public boolean updateTagForBookWithTitle(String new_tag_name, String tag_name, String title) {
 		try {
 			connection = DAOUtilities.getConnection();
 			//use library or make model same names and escape.. sql queries to prone to syntax errors..
-			String sql = "UPDATE Tags SET tag_name=? WHERE isbn_13 = (SELECT isbn_13 FROM books WHERE title = ?)"; 
+			String sql = "UPDATE Tags SET tag_name=? WHERE tag_name=? AND isbn_13 = (SELECT isbn_13 FROM books WHERE title=?)"; 
 			stmt = connection.prepareStatement(sql);
 			
-			stmt.setString(1, tag.getTagName());
-			stmt.setString(2, title);
-			
+			stmt.setString(1, new_tag_name);
+			stmt.setString(2, tag_name);
+			stmt.setString(3, title);
+
 			if (stmt.executeUpdate() != 0)
 				return true;
 			else
@@ -266,15 +266,17 @@ public class TagDAOImpl implements TagDAO {
 	/*------------------------------------------------------------------------------------------------*/
 
 	@Override
-	public boolean updateTagForBookWithISBN(Tag tag) {
+	public boolean updateTagForBookWithISBN(String new_tag_name, String isbn_13, String tag_name) {
 		try {
 			connection = DAOUtilities.getConnection();
 			//use library or make model same names and escape.. sql queries to prone to syntax errors..
-			String sql = "UPDATE Tags SET tag_name=? WHERE isbn_13 = ?"; 
+			String sql = "UPDATE Tags SET tag_name=? WHERE isbn_13=? AND tag_name=?"; 
 			stmt = connection.prepareStatement(sql);
 			
-			stmt.setString(1, tag.getTagName());
-			stmt.setString(2, tag.getIsbn13());
+			stmt.setString(1, new_tag_name);
+			stmt.setString(2, isbn_13);
+			stmt.setString(3, tag_name);
+
 			
 			if (stmt.executeUpdate() != 0)
 				return true;
@@ -339,12 +341,38 @@ public class TagDAOImpl implements TagDAO {
 	
 	/*------------------------------------------------------------------------------------------------*/
 
+	
+	public boolean deleteOneTagForBookWithISBN(String isbn_13, String tag_name) {
+		try {
+			
+			connection = DAOUtilities.getConnection();
+			String sql = "DELETE FROM tags WHERE isbn_13= ? AND tag_name= ? ";
+			stmt = connection.prepareStatement(sql);
+			
+			stmt.setString(1, isbn_13);
+			stmt.setString(2, tag_name);
+
+			if (stmt.executeUpdate() != 0)
+				return true;
+			else
+				return false;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			closeResources();
+		}		
+	}
+	
+	/*------------------------------------------------------------------------------------------------*/
+
 	@Override
 	public boolean deleteAllTagsForBookWithTitle(String title) {
 		//get all books with title > join all tags > delete all tags 
 		//
 		//||
-		//get all books with title > get isbn > delete all tags with isbn
+		//get all books with title > get isbn_13 > delete all tags with isb_13
 		//DELETE FROM tags WHERE isbn_13 = (SELECT isbn_13 FROM books WHERE title = '?')
 
 		try {

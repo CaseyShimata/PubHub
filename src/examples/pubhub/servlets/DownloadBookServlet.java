@@ -28,10 +28,10 @@ public class DownloadBookServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		String isbn13 = request.getParameter("isbn13");
+		String isbn_13 = request.getParameter("isbn_13");
 		
 		BookDAO dao = DAOUtilities.getBookDAO();
-		Book book = dao.getBookByISBN(isbn13);
+		Book book = dao.getBookByISBN(isbn_13);
 		
 		// In order to download the PDF to the client, we need to add a data stream to the response.
 		// First we set the content type to PDF, so the browser knows how to interpret the data it's receiving

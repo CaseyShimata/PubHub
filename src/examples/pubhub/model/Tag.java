@@ -12,15 +12,15 @@ public class Tag {
 	private LocalDate time_stamp;	// Date of publish to the website
 	
 	// Constructor used when no date is specified
-	public Tag(String isbn, String tag_name) {
-		this.isbn_13 = isbn;
+	public Tag(String isbn_13, String tag_name) {
+		this.isbn_13 = isbn_13;
 		this.tag_name = tag_name;
 		this.time_stamp = LocalDate.now();
 	}
 	
 	// Constructor used when a date is specified
-	public Tag(String isbn, String tag_name, LocalDate publishDate) {
-		this.isbn_13 = isbn;
+	public Tag(String isbn_13, String tag_name, LocalDate publishDate) {
+		this.isbn_13 = isbn_13;
 		this.tag_name = tag_name;
 		this.time_stamp = publishDate;
 	}
@@ -36,8 +36,8 @@ public class Tag {
 		return isbn_13;
 	}
 
-	public void setIsbn13(String isbn13) {
-		this.isbn_13 = isbn13;
+	public void setIsbn13(String isbn_13) {
+		this.isbn_13 = isbn_13;
 	}
 
 	public String getTagName() {

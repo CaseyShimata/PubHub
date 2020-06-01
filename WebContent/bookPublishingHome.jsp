@@ -42,20 +42,19 @@
 			<tbody>
 				<c:forEach var="book" items="${books}">
 					<tr>
-						<td><c:out value="${book.isbn13}" /></td>
-
+						<td><c:out value="${book.isbn_13}" /></td>
 						<td><c:out value="${book.title}" /></td>
 						<td><c:out value="${book.author}" /></td>
 						<td><c:out value="${book.publishDate}" /></td>
-						<td><fmt:formatNumber value="${book.price }" type="CURRENCY" /></td>
+						<td><fmt:formatNumber value="${book.price}" type="CURRENCY" /></td>
 						<td><form action="DownloadBook" method="get">
-								<input type="hidden" name="isbn13" value="${book.isbn13}">
+								<input type="hidden" name="isbn_13" value="${book.isbn_13}">
 								<button class="btn btn-success">Download</button>
 							</form></td>
 						<!--  this is the /ViewBookDetails route the ? denotes a param name -->
-						<td><form action="ViewBookDetails?isbn=${book.isbn13}"
+						<td><form action="ViewBookDetails?isbn_13=${book.isbn_13}"
 								method="get">
-								<input type="hidden" name="isbn13" value="${book.isbn13}">
+								<input type="hidden" name="isbn_13" value="${book.isbn_13}">
 								<button class="btn btn-primary">Details</button>
 							</form></td>
 					</tr>
@@ -66,9 +65,13 @@
 			Search by Tag:
 			<form action="BookPublishing" method="get">
 				<select name="selectedTag" onchange="this.form.submit()">
+						<option value="none" ${sessionScope.selectedTag == "none" ? 'selected="selected"' : ''}>
+						<c:out value="none" 
+						/>
 					<c:forEach var="tag" items="${tags}">
-						<option value="${tag.getTagName()}"><c:out
-								value="${tag.getTagName()}" /></option>
+						<option value="${tag.getTagName()}" ${sessionScope.selectedTag == tag.getTagName() ? 'selected="selected"' : ''}>
+						<c:out value="${tag.getTagName()}" 
+						/></option>
 					</c:forEach>
 				</select>
 

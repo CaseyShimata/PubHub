@@ -34,13 +34,13 @@ public class ViewBookDetailsServlet extends HttpServlet {
 		// The bookDetails.jsp page needs to have the details of the selected book saved to the request,
 		// Otherwise it won't know what details to display. Ergo, we need to fetch those details before we
 		// Actually redirect the user.
-		String isbn13 = request.getParameter("isbn13");
+		String isbn_13 = request.getParameter("isbn_13");
 		
 		BookDAO bookDao = DAOUtilities.getBookDAO();
 		TagDAO tagDao = DAOUtilities.getTagDAO();
 
-		Book book = bookDao.getBookByISBN(isbn13);
-		List<Tag> tags = tagDao.getAllTagsForBookWithISBN(isbn13);
+		Book book = bookDao.getBookByISBN(isbn_13);
+		List<Tag> tags = tagDao.getAllTagsForBookWithISBN(isbn_13);
 		
 		request.setAttribute("book", book);
 		request.setAttribute("tags", tags);

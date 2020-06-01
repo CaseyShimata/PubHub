@@ -30,14 +30,14 @@ public class PublishBookServlet extends HttpServlet {
 
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-		String isbn13 = req.getParameter("isbn13");
+		String isbn_13 = req.getParameter("isbn_13");
 
 		BookDAO database = DAOUtilities.getBookDAO();
-		Book tempBook = database.getBookByISBN(isbn13);
+		Book tempBook = database.getBookByISBN(isbn_13);
 		if (tempBook != null) {
-			// ASSERT: book with isbn already exists
+			// ASSERT: book with isbn_13 already exists
 
-			req.getSession().setAttribute("message", "ISBN of " + isbn13 + " is already in use");
+			req.getSession().setAttribute("message", "ISBN of " + isbn_13 + " is already in use");
 			req.getSession().setAttribute("messageClass", "alert-danger");
 			req.getRequestDispatcher("publishBook.jsp").forward(req, resp);
 
@@ -45,7 +45,7 @@ public class PublishBookServlet extends HttpServlet {
 
 			//should be handled in bookdaoimpl insert book
 			Book book = new Book();
-			book.setIsbn13(req.getParameter("isbn13"));
+			book.setisbn_13(req.getParameter("isbn_13"));
 			book.setTitle(req.getParameter("title"));
 			book.setAuthor(req.getParameter("author"));
 			book.setPublishDate(LocalDate.now());

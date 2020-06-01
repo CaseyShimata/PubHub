@@ -14,8 +14,8 @@ public class Book {
 	private byte[] content;
 
 	// Constructor used when no date is specified
-	public Book(String isbn, String title, String author, byte[] content) {
-		this.isbn_13 = isbn;
+	public Book(String isbn_13, String title, String author, byte[] content) {
+		this.isbn_13 = isbn_13;
 		this.title = title;
 		this.author = author;
 		this.publishDate = LocalDate.now();
@@ -23,8 +23,8 @@ public class Book {
 	}
 	
 	// Constructor used when a date is specified
-	public Book(String isbn, String title, String author, byte[] content, LocalDate publishDate) {
-		this.isbn_13 = isbn;
+	public Book(String isbn_13, String title, String author, byte[] content, LocalDate publishDate) {
+		this.isbn_13 = isbn_13;
 		this.title = title;
 		this.author = author;
 		this.publishDate = publishDate;
@@ -40,12 +40,12 @@ public class Book {
 		this.content = null;
 	}
 	
-	public String getIsbn13() {
+	public String getisbn_13() {
 		return isbn_13;
 	}
 
-	public void setIsbn13(String isbn13) {
-		this.isbn_13 = isbn13;
+	public void setisbn_13(String isbn_13) {
+		this.isbn_13 = isbn_13;
 	}
 
 	public String getTitle() {

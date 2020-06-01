@@ -39,9 +39,8 @@ public class BookDAOImpl implements BookDAO {
 			while (rs.next()) {
 				// We need to populate a Book object with info for each row from our query result
 				Book book = new Book();
-
 				// Each variable in our Book object maps to a column in a row from our results.
-				book.setIsbn13(rs.getString("isbn_13"));
+				book.setisbn_13(rs.getString("isbn_13"));
 				book.setAuthor(rs.getString("author"));
 				book.setTitle(rs.getString("title"));
 				
@@ -95,7 +94,7 @@ public class BookDAOImpl implements BookDAO {
 			while (rs.next()) {
 				Book book = new Book();
 
-				book.setIsbn13(rs.getString("isbn_13"));
+				book.setisbn_13(rs.getString("isbn_13"));
 				book.setAuthor(rs.getString("author"));
 				book.setTitle(rs.getString("title"));
 				book.setPublishDate(rs.getDate("publish_date").toLocalDate());
@@ -134,7 +133,7 @@ public class BookDAOImpl implements BookDAO {
 			while (rs.next()) {
 				Book book = new Book();
 
-				book.setIsbn13(rs.getString("isbn_13"));
+				book.setisbn_13(rs.getString("isbn_13"));
 				book.setAuthor(rs.getString("author"));
 				book.setTitle(rs.getString("title"));
 				book.setPublishDate(rs.getDate("publish_date").toLocalDate());
@@ -174,7 +173,7 @@ public class BookDAOImpl implements BookDAO {
 			while (rs.next()) {
 				Book book = new Book();
 
-				book.setIsbn13(rs.getString("isbn_13"));
+				book.setisbn_13(rs.getString("isbn_13"));
 				book.setAuthor(rs.getString("author"));
 				book.setTitle(rs.getString("title"));
 				book.setPublishDate(rs.getDate("publish_date").toLocalDate());
@@ -198,7 +197,7 @@ public class BookDAOImpl implements BookDAO {
 
 	
 	@Override
-	public Book getBookByISBN(String isbn) {
+	public Book getBookByISBN(String isbn_13) {
 		Book book = null;
 
 		try {
@@ -206,13 +205,13 @@ public class BookDAOImpl implements BookDAO {
 			String sql = "SELECT * FROM Books WHERE isbn_13 = ?";
 			stmt = connection.prepareStatement(sql);
 			
-			stmt.setString(1, isbn);
+			stmt.setString(1, isbn_13);
 			
 			ResultSet rs = stmt.executeQuery();
 
 			if (rs.next()) {
 				book = new Book();
-				book.setIsbn13(rs.getString("isbn_13"));
+				book.setisbn_13(rs.getString("isbn_13"));
 				book.setAuthor(rs.getString("author"));
 				book.setTitle(rs.getString("title"));
 				book.setPublishDate(rs.getDate("publish_date").toLocalDate());
@@ -242,7 +241,7 @@ public class BookDAOImpl implements BookDAO {
 			stmt = connection.prepareStatement(sql);
 			
 			// But that's okay, we can set them all before we execute
-			stmt.setString(1, book.getIsbn13());
+			stmt.setString(1, book.getisbn_13());
 			stmt.setString(2, book.getTitle());
 			stmt.setString(3, book.getAuthor());
 			stmt.setDate(4, Date.valueOf(book.getPublishDate()));
@@ -280,7 +279,7 @@ public class BookDAOImpl implements BookDAO {
 			stmt.setString(1, book.getTitle());
 			stmt.setString(2, book.getAuthor());
 			stmt.setDouble(3, book.getPrice());
-			stmt.setString(4, book.getIsbn13());
+			stmt.setString(4, book.getisbn_13());
 			
 			System.out.println(stmt);
 			
@@ -303,13 +302,13 @@ public class BookDAOImpl implements BookDAO {
 
 	
 	@Override
-	public boolean deleteBookByISBN(String isbn) {
+	public boolean deleteBookByISBN(String isbn_13) {
 		try {
 			connection = DAOUtilities.getConnection();
 			String sql = "DELETE Books WHERE isbn_13=?";
 			stmt = connection.prepareStatement(sql);
 			
-			stmt.setString(1, isbn);
+			stmt.setString(1, isbn_13);
 
 			if (stmt.executeUpdate() != 0)
 				return true;

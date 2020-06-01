@@ -9,8 +9,8 @@ import examples.pubhub.model.Book;
 public interface TagDAO {
 	
 	//create
-	public boolean addTagToBookWithTitle(String title, Tag tag);
-	public boolean addTagToBookWithISBN(Tag tag);
+	public boolean addTagToBookWithTitle(String title, String new_tag_name);
+	public boolean addTagToBookWithISBN(String isbn_13, String new_tag_name);
 	
 	//read
 	public List<Tag> getAllTags();
@@ -23,16 +23,19 @@ public interface TagDAO {
 	
 
 	//update
-	public boolean updateAllTagsNamed(Tag tag);
+	public boolean updateAllTagsNamed(String new_tag_name, String tag_name);
 
-	public boolean updateTagForBookWithTitle(String title, Tag tag);
-	public boolean updateTagForBookWithISBN(Tag tag);
+	public boolean updateTagForBookWithTitle(String new_tag_name, String tag_name, String title);
+	public boolean updateTagForBookWithISBN(String new_tag_name, String tag_name, String isbn_13);
 	
 	//delete
 	public boolean deleteAllTags();
 	public boolean deleteAllTagsNamed(String tag_name);
 	
+	public boolean deleteOneTagForBookWithISBN(String isbn_13, String tag_name);
+
+	
 	public boolean deleteAllTagsForBookWithTitle(String title);
-	public boolean deleteAllTagsForBookWithISBN(String isbn);
+	public boolean deleteAllTagsForBookWithISBN(String isbn_13);
 
 }

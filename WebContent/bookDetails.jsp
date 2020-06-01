@@ -8,20 +8,31 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 
 <script>
-	function hideDeleteShowEdit() {
-		var x = document.getElementById("edit");
-		var y = document.getElementById("delete");
+	function hideDeleteShowEdit(index) {
+		var x = document.getElementById("edit" + index);
+		var y = document.getElementById("delete" + index);
 		x.style.display = "inline";
 		y.style.display = "none";
 	}
-	function showDeleteHideEdit() {
-		var x = document.getElementById("edit");
-		var y = document.getElementById("delete");
-		x.style.display = "none";
-		y.style.display = "inline";
+	function showDeleteHideEdit(index) {
+		var delayInMilliseconds = 1000; //1 second
+
+		setTimeout(function() {
+			var x = document.getElementById("edit" + index);
+			var y = document.getElementById("delete" + index);
+
+			x.style.display = "none";
+			y.style.display = "inline";
+		}, delayInMilliseconds);
 	}
-	
-	
+	function showAddTextShowEnterHidePlus() {
+		var x = document.getElementById("addText");
+		var y = document.getElementById("newTagButton");
+		var z = document.getElementById("plus");
+		x.style.display = "inline";
+		y.style.display = "inline";
+		z.style.display = "none";
+	}
 </script>
 
 <!-- 	Just some stuff you need -->
@@ -39,14 +50,14 @@
 		</c:choose>
 
 		<h1>
-			PUBHUB <small>Book Details - ${book.isbn13 }</small>
+			PUBHUB <small>Book Details - ${book.isbn_13 }</small>
 		</h1>
 		<hr class="book-primary">
 
 		<form action="UpdateBook" method="post" class="form-horizontal">
 
-			<input type="hidden" class="form-control" id="isbn13" name="isbn13"
-				required="required" value="${book.isbn13 }" />
+			<input type="hidden" class="form-control" id="isbn_13" name="isbn_13"
+				required="required" value="${book.isbn_13 }" />
 
 			<div class="form-group">
 				<label for="title" class="col-sm-4 control-label">Title</label>
@@ -72,40 +83,48 @@
 			</div>
 			<div style="padding: 2px;" class="tags-form-group">
 				<ul style="list-style: none; display: flex; flex-direction: row;">
-					<c:forEach var="tag" items="${tags}">
+					<c:forEach var="tag" items="${tags}" varStatus="loop">
 						<li
 							style="border-radius: 15px; background-color: grey; display: table; margin-right: 20px">
-							<input onfocus="hideDeleteShowEdit()" onfocusout="showDeleteHideEdit()"
+							<input onfocus="hideDeleteShowEdit('${loop.index}')"
+							onfocusout="showDeleteHideEdit('${loop.index}')"
 							size="${tag.getTagName().length()}"
 							style="background-color: grey; border-radius: 15px; margin: 0"
-							type="text" name="${tag.getTagName()}"
-							value="${tag.getTagName()}" />
-							<button id="delete"
+							type="text" name="tagTextBox" value="${tag.getTagName()}" />
+							<button id="delete${loop.index}"
 								style="display: inline; background-color: grey; border-radius: 15px; margin: 0"
-								type="button" name="deleteTagButton"
-								value="${tag.getIsbn13()}">X</button>
-							<button id="edit"
+								type="submit" name="deleteTagButton"
+								value="${tag.getIsbn13()}/${tag.getTagName()}">X</button>
+							<button id="edit${loop.index}"
 								style="display: none; background-color: grey; border-radius: 15px; margin: 0"
-								type="button" name="editTagButton"
-								value="${tag.getIsbn13()}">></button>
+								type="submit" name="editTagButton"
+								value="${tag.getIsbn13()}/${tag.getTagName()}">></button>
 						</li>
 					</c:forEach>
-					<li style="display: inline; margin-left: 0"><img
-						style="width: 30px; height: 30px; object-fit: cover;"
-						alt="add a tag"
-						src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Plus_symbol.svg/640px-Plus_symbol.svg.png" />
+					<li style="display: inline; margin-left: 0">
 
+						<input id="addText"
+						style="display: none; background-color: grey; border-radius: 15px; margin: 0"
+						type="text" size="25" name="addText" value="" />
+
+						<button id="newTagButton"
+							style="display: none; width: 30px; height: 30px; background-color: white; border-radius: 15px; margin: 0"
+							type="submit" name="newTagButton" value="${book.isbn_13}">></button>
+
+						<button id="plus"
+							style="display: inline; width: 30px; height: 30px; background-color: white; border-radius: 15px; margin: 0"
+							type="button" name="plus" onclick="showAddTextShowEnterHidePlus()"
+							value="">+</button>
 					</li>
 				</ul>
-
 			</div>
+
 			<div class="form-group">
 				<div class="col-sm-offset-4 col-sm-1">
-					<button type="submit" class="btn btn-info">Update</button>
+					<button name="update" type="submit" class="btn btn-info">Update</button>
 				</div>
 			</div>
 		</form>
-
 	</div>
 </header>
 
